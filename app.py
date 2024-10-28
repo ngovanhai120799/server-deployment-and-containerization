@@ -26,7 +26,7 @@ def auth():
         logger.error('No password provider')
         return jsonify({'message': 'Missing parameter: password'}, 400)
     body = {'email': email, 'password': password}
-    token = encoded_jwt(body).decode('utf-8')
+    token = encoded_jwt(body)
     return jsonify(token)
 
 @app.route('/contents', methods=['GET'])
@@ -36,4 +36,4 @@ def get_content():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    app.run()
