@@ -9,4 +9,4 @@ python-dotenv = "*"
 pyjwt = "*"
 
 [requires] # Here goes your required Python version.
-python_version = "3.12"
+python_version = "3.9"
