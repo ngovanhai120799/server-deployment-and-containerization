@@ -35,7 +35,7 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - IMAGE_REPO_NAME=server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss
+      - export IMAGE_REPO_NAME=server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss
       - TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:${TAG}"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)

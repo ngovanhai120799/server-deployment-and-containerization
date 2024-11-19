@@ -4,11 +4,12 @@ metadata:
   name: flask-app-service
 spec:
   type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 8080
   selector:
-    app: flask-app-service
+    app.kubernetes.io/name: flask-app-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,8 +31,7 @@ spec:
         app: flask-app-service
     spec:
       containers:
-        - name: flask-app-service
-          image: CONTAINER_IMAGE
+        - image: CONTAINER_IMAGE
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
