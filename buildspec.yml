@@ -42,11 +42,11 @@ phases:
       - pip install -r requirements.txt
   build:
     commands:
-      - docker image build -t flask-app-service .
+      - docker build -t $REPOSITORY_URI:latest .
 
   post_build:
     commands:
-      - docker tag flask-app-service:latest $REPOSITORY_URI/flask-app-service:latest
+      - docker tag flask-app-service:latest $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
