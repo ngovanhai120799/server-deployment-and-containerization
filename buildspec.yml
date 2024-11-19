@@ -46,7 +46,7 @@ phases:
 
   post_build:
     commands:
-      - docker tag flask-app-service:latest $REPOSITORY_URI:latest
+      - docker images list
       - docker push $REPOSITORY_URI:latest
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
