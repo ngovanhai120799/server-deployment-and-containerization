@@ -8,12 +8,12 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: flask-app
+    app: flask-app-service
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-app
+  name: flask-app-service
 spec:
   replicas: 2
   strategy:
@@ -23,7 +23,7 @@ spec:
       maxSurge: 2
   selector:
     matchLabels:
-      app: flask-app
+      app: flask-app-service
   template:
     metadata:
       labels:
@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: flask-api
-          image: flask:latest
+          image: CONTAINER_IMAGE
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
