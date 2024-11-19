@@ -35,7 +35,6 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
@@ -43,17 +42,17 @@ phases:
       - pip install -r requirements.txt
   build:
     commands:
-      - docker build -t "$REPOSITORY_URI:$TAG"
-
+      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss .
+      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest $REPOSITORY_URI:latest
   post_build:
     commands:
       - docker images list
-      - docker push "$REPOSITORY_URI:$TAG"
+      - docker push $REPOSITORY_URI:latest
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
       - kubectl apply -f ./deployment.yml
-      - printf '[{"name":"flask-app-service","imageUri":"%s"}]' "$REPOSITORY_URI:$TAG" > build.json
+      - printf '[{"name":"flask-app-service","imageUri":"%s"}]' $REPOSITORY_URI:latest > build.json
 artifacts:
   files: build.json
 env:
