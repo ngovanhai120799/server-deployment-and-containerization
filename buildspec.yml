@@ -35,7 +35,6 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - TAG="latest"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
@@ -43,11 +42,11 @@ phases:
       - pip install -r requirements.txt
   build:
     commands:
-      - docker build -t $REPOSITORY_URI:$TAG .
+      - docker build -t $REPOSITORY_URI:latest .
 
   post_build:
     commands:
-      - docker push $REPOSITORY_URI:$TAG
+      - docker push $REPOSITORY_URI:latest
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
