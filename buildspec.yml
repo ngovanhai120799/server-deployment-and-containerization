@@ -35,25 +35,22 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
-      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:${TAG}"'@' deployment.yml
+      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:latest"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
       - echo `ls -l`
       - pip install -r requirements.txt
   build:
     commands:
-      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:$TAG .
-      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:$TAG $REPOSITORY_URI:$TAG
+      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest .
+      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest $REPOSITORY_URI:latest
       - docker images list
 
   post_build:
     commands:
-      - docker push $REPOSITORY_URI:$TAG
-      - echo $EKS_CLUSTER_NAME
-      - echo $EKS_KUBECTL_ROLE_ARN
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
-      - kubectl apply -f deployment.yml
+      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest .
+      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest $REPOSITORY_URI:latest
+      - docker images list
 artifacts:
   files: build.json
 env:
