@@ -51,7 +51,8 @@ phases:
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
-      - kubectl apply -f ./deployment.yml
+      - kubectl patch configmap/aws-auth -n kube-system --patch-file aws-auth-patch.yml
+      - kubectl apply -f deployment.yml
 artifacts:
   files: build.json
 env:
