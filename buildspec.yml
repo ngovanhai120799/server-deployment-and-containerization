@@ -29,13 +29,13 @@ phases:
       - export PATH=$PWD/:$PATH
       - python --version
       - echo 'export PATH=$PWD/:$PATH' >> $HOME/.bashrc
-      - echo `kubectl version --short --client`
+      - echo `kubectl version --client=true`
       - python -m pip install --upgrade --force pip
       - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8):latest"
+      - TAG="latest"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
@@ -43,7 +43,7 @@ phases:
       - pip install -r requirements.txt
   build:
     commands:
-      - docker build --tag $REPOSITORY_URI:$TAG .
+      - docker build -t $REPOSITORY_URI:$TAG .
 
   post_build:
     commands:
