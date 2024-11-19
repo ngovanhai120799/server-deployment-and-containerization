@@ -30,7 +30,7 @@ spec:
         app: flask-app
     spec:
       containers:
-        - name: flask-api
+        - name: flask-app-service
           image: CONTAINER_IMAGE
           securityContext:
             privileged: false
