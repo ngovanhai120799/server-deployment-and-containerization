@@ -19,9 +19,9 @@ phases:
       # To download a specific version v1.27.9 on Linux, use:
       - curl -LO https://dl.k8s.io/release/v1.30.6/bin/linux/amd64/kubectl
       # Download the kubectl checksum file
-      - curl -LO https://dl.k8s.io/release/v1.30.6/bin/linux/arm64/kubectl.sha256
+      - curl -LO https://dl.k8s.io/v1.30.6/bin/linux/amd64/kubelet.sha256
       # Validate the kubectl binary against the checksum file
-      - sha256sum -c kubectl.sha256
+      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
       # Install kubectl
       - echo 'Install kubectl'
       - chmod +x ./kubectl ./aws-iam-authenticator
