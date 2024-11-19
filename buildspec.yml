@@ -35,7 +35,7 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' deployment.yml
+      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:latest"'@' deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
       - echo `ls -l`
@@ -51,7 +51,7 @@ phases:
       - echo $EKS_KUBECTL_ROLE_ARN
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
       - kubectl apply -f ./deployment.yml
-      - printf '[{"name":"flask-app-service","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
+      - printf '[{"name":"flask-app-service","imageUri":"%s"}]' $REPOSITORY_URI:latest > build.json
 artifacts:
   files: build.json
 env:
