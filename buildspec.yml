@@ -35,6 +35,9 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
+      - pip3 install -r requirements.txt
+      - python -m pytest test_app.py
+
       # Docker Image Tag with Date Time & Code Buiild Resolved Source Version
       - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
       # Update Image tag in our Kubernetes Deployment Manifest
@@ -47,6 +50,7 @@ phases:
       - $(aws ecr get-login --no-include-email)
       # Update Kube config Home Directory
       - export KUBECONFIG=$HOME/.kube/config
+
   build:
     commands:
       - echo "Build started on `date`"

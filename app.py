@@ -1,17 +1,18 @@
 # pylint: disable=import-error
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Blueprint
 from utils.logging_utils import get_logger, LOG_LEVEL
 from decorator import  decode_jwt, require_jwt, encoded_jwt
-app = Flask(__name__)
+
+api = Blueprint('api', __name__)
 
 logger = get_logger()
 logger.debug("Starting with log level: %s" % LOG_LEVEL )
 
-@app.route('/', methods=['GET', 'POST'])
+@api.route('/', methods=['GET', 'POST'])
 def health():
     return jsonify('Healthy')
 
-@app.route('/auth', methods=['GET','POST'])
+@api.route('/auth', methods=['GET','POST'])
 def auth():
     """
     Create JWT token based on email.
@@ -29,11 +30,17 @@ def auth():
     token = encoded_jwt(body)
     return jsonify(token)
 
-@app.route('/contents', methods=['GET'])
+@api.route('/contents', methods=['GET'])
 @require_jwt
 def get_content():
     data = decode_jwt()
     return jsonify(data)
 
+def create_app():
+    """Application-factory pattern"""
+    app = Flask(__name__)
+    app.register_blueprint(api)
+    return app
 if __name__ == '__main__':
+    app = create_app()
     app.run()
