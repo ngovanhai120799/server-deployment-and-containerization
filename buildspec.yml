@@ -69,8 +69,7 @@ phases:
       - echo "Setting Environment Variables related to AWS CLI for Kube Config Setup"
       - echo $EKS_CLUSTER_NAME
       - echo $EKS_KUBECTL_ROLE_ARN
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - kubectl patch configmap/aws-auth -n kube-system --patch-file aws-auth-patch.yml
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME $EKS_KUBECTL_ROLE_ARN
       - echo "Apply changes to kube manifests"
       - kubectl apply -f kube-manifests/deployment.yml
       - printf '[{"name":"simple_jwt_api","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
