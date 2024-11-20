@@ -7,7 +7,7 @@ data:
       rolearn: arn:aws:iam::211478333253:role/eksctl-simple-jwt-app-nodegroup-si-NodeInstanceRole-jU6xuuzT1kLn
       username: system:node:{{EC2PrivateDNSName}}
   mapUsers: |
-    - userarn: arn:aws:iam::211478333253:root
+    - userarn: arn:aws:iam::211478333253:server-deployment-and-containe-CodeBuildServiceRole-wzzFTiIjz4Vv
       groups:
         - system:masters
 kind: ConfigMap
