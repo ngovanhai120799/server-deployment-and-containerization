@@ -10,7 +10,6 @@ data:
     - userarn: arn:aws:iam::211478333253:root
       groups:
         - system:masters
-
 kind: ConfigMap
 metadata:
   creationTimestamp: "2024-11-20T10:18:20Z"
