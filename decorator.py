@@ -1,5 +1,4 @@
 import functools
-import os
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -7,7 +6,7 @@ from flask import request, abort
 from dotenv import load_dotenv
 
 load_dotenv()
-JWT_SECRET = os.environ['JWT_SECRET']
+JWT_SECRET = "01JB605V4B7DH1BHXRBPQ5GR2N"
 JWT_ALGORITHM = 'HS256'
 
 def require_jwt(f):
