@@ -36,7 +36,7 @@ phases:
   pre_build:
     commands:
       - pip3 install -r requirements.txt
-      - python -m pytest test_app.py
+      - python -m unittest test_app.py
 
       # Docker Image Tag with Date Time & Code Buiild Resolved Source Version
       - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
