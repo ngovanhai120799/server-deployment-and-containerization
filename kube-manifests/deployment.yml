@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: simple-jwt-app-service
+  name: simple-jwt-app-service-example
   labels:
     app: simple-jwt-app
   annotations:
@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: simple-jwt-app
-          image: 211478333253.dkr.ecr.us-east-1.amazonaws.com/server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:2024-11-20.07.12.30.b478637c
+          image: CONTAINER_IMAGE
           securityContext:
             privileged: false
             readOnlyRootFilesystem: false
