@@ -4,8 +4,7 @@
     {
       "Effect": "Allow",
       "Action": [
-        "eks:Describe*",
-        "ssm:GetParameters"
+        "eks:Describe*"
       ],
       "Resource": "*"
     }
