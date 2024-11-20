@@ -35,22 +35,36 @@ phases:
       - apt-get update && apt-get -y install jq  && pip install --upgrade awscli pytest
   pre_build:
     commands:
-      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:latest"'@' deployment.yml
+      # Docker Image Tag with Date Time & Code Buiild Resolved Source Version
+      - TAG="$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+      # Update Image tag in our Kubernetes Deployment Manifest
+      - echo "Update Image tag in kube-manifest..."
+      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' kube-manifests/deployment.yml
       - $(aws ecr get-login --no-include-email)
       - export KUBECONFIG=$HOME/.kube/config
       - echo `ls -l`
       - pip install -r requirements.txt
   build:
     commands:
-      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest .
-      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest $REPOSITORY_URI:latest
-      - docker images list
+      - echo "Build started on `date`"
+      - echo "Building the Docker image..."
+      - docker build --tag $REPOSITORY_URI:$TAG .
 
   post_build:
     commands:
-      - docker build -t server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest .
-      - docker tag server-deployment-and-containerization-ecrdockerrepository-btam8r3u0nss:latest $REPOSITORY_URI:latest
-      - docker images list
+      - echo "Build completed on `date`"
+      - echo "Pushing the Docker image to ECR Repository"
+      - docker push $REPOSITORY_URI:$TAG
+      - echo "Docker Image Push to ECR Completed -  $REPOSITORY_URI:$TAG"
+      # Extracting AWS Credential Information using STS Assume Role for kubectl
+      - echo "Setting Environment Variables related to AWS CLI for Kube Config Setup"
+      - echo $EKS_CLUSTER_NAME
+      - echo $EKS_KUBECTL_ROLE_ARN
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --role-arn $EKS_KUBECTL_ROLE_ARN
+      - echo "Apply changes to kube manifests"
+      - kubectl apply -f kube-manifests/
+      - printf '[{"name":"simple_jwt_api","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
+
 artifacts:
   files: build.json
 env:
