@@ -40,10 +40,13 @@ phases:
       # Update Image tag in our Kubernetes Deployment Manifest
       - echo "Update Image tag in kube-manifest..."
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' kube-manifests/deployment.yml
+      - echo "Verify AWS CLI Version..."
+      - aws --version
+      # Login to ECR Registry for docker to push the image to ECR Repository
+      - echo "Login in to Amazon ECR..."
       - $(aws ecr get-login --no-include-email)
+      # Update Kube config Home Directory
       - export KUBECONFIG=$HOME/.kube/config
-      - echo `ls -l`
-      - pip install -r requirements.txt
   build:
     commands:
       - echo "Build started on `date`"

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eks-devops-deployment
+  name: simple-jwt-api
   labels:
-    app: eks-devops
+    app: simple-jwt-api
 spec:
   replicas: 2
   strategy:
@@ -13,11 +13,11 @@ spec:
       maxSurge: 2
   selector:
     matchLabels:
-      app: eks-devops
+      app: simple-jwt-api
   template:
     metadata:
       labels:
-        app: eks-devops
+        app: simple-jwt-api
     spec:
       containers:
         - image: CONTAINER_IMAGE
